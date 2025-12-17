@@ -1,80 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>Login | Secure Login System</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Login</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <h2>Login</h2>
+  <input id="username" placeholder="Username">
+  <input id="password" type="password" placeholder="Password">
+  <button onclick="login()">Login</button>
 
-  <div class="container">
-    <h2>Login</h2>
+  <p id="msg"></p>
 
-    <input id="username" type="text" placeholder="Username">
-    <input id="password" type="password" placeholder="Password">
-
-    <button onclick="login()">Login</button>
-
-    <p id="result"></p>
-
-    <p style="text-align:center; margin-top:10px;">
-      New user?
-      <a href="index.html">Register here</a>
-    </p>
-  </div>
-
-  <scrip>
-    function login() {
-      const username = document.getElementById("username").value;
-      const password = document.getElementById("password").value;
-
-      fetch("http://localhost:5000/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          username: username,
-          password: password
-        })
-      })
-      .then(response => response.json())
-      .then(data => {
-        document.getElementById("result").innerText = data.message;
-
-        if (data.message === "Login successful") {
-          document.getElementById("result").style.color = "green";
-        } else {
-          document.getElementById("result").style.color = "red";
-        }
-      })
-      .catch(error => {
-        document.getElementById("result").innerText = "Server error";
-        document.getElementById("result").style.color = "red";
-      });
-    }
   <script>
-  async function loginUser() {
-    const username = document.getElementById("username").value;
-    const password = document.getElementById("password").value;
+    const API = "http://localhost:3000";
 
-    const response = await fetch("http://localhost:5000/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        username: username,
-        password: password
-      })
-    });
+    async function login() {
+      const res = await fetch(API + "/login", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+          username: document.getElementById("username").value,
+          password: document.getElementById("password").value
+        })
+      });
+      const data = await res.json();
+      document.getElementById("msg").textContent = data.message;
 
-    const data = await response.json();
-
-    if (response.ok) {
-      window.location.href = "dashboard.html";
-    } else {
-      alert(data.message);
+      if (data.message === "Login success") {
+        // simple redirect to dashboard
+        window.location.href = "dashboard.html?user=" +
+          encodeURIComponent(data.user);
+      }
     }
-  }
-
+  </script>
+</body>
+</html>

@@ -1,37 +1,54 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>Dashboard | Secure Login System</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <h2 id="welcome"></h2>
 
-  <div class="container">
-    <h2>Welcome to Dashboard</h2>
+  <h3>Recent Login Activity</h3>
+  <table border="1">
+    <thead>
+      <tr>
+        <th>Username</th>
+        <th>Action</th>
+        <th>Status</th>
+        <th>Time</th>
+      </tr>
+    </thead>
+    <tbody id="logsBody"></tbody>
+  </table>
 
-    <p id="welcomeText"></p>
-
-    <button onclick="logout()">Logout</button>
-  </div>
+  <a href="index.html">Logout</a>
 
   <script>
-    // Get logged-in user from browser storage
-    const user = localStorage.getItem("loggedInUser");
+    const params = new URLSearchParams(window.location.search);
+    const user = params.get("user") || "User";
+    document.getElementById("welcome").textContent =
+      "Welcome, " + user;
 
-    // If user not logged in, send back to login page
-    if (!user) {
-      window.location.href = "login.html";
-    } else {
-      document.getElementById("welcomeText").innerText =
-        "Hello, " + user + "! You have successfully logged in.";
+    const API = "http://localhost:3000";
+
+    async function loadLogs() {
+      const res = await fetch(API + "/logs");
+      const logs = await res.json();
+      const tbody = document.getElementById("logsBody");
+      tbody.innerHTML = "";
+
+      logs.forEach(log => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${log.username}</td>
+          <td>${log.action}</td>
+          <td>${log.status}</td>
+          <td>${log.timestamp}</td>
+        `;
+        tbody.appendChild(tr);
+      });
     }
 
-    function logout() {
-      localStorage.removeItem("loggedInUser");
-      window.location.href = "login.html";
-    }
+    loadLogs();
   </script>
-
 </body>
 </html>

@@ -1,18 +1,30 @@
-<h2>Register</h2>
-<input id="username" placeholder="Username">
-<input id="password" type="password" placeholder="Password">
-<button onclick="register()">Submit</button>
-<script>
-async function register() {
- let res = await fetch("https://your-backend-url/register", {
- method: "POST",
- headers: {"Content-Type": "application/json"},
- body: JSON.stringify({
- username: document.getElementById("username").value,
- password: document.getElementById("password").value
- })
- });
- let data = await res.json();
- alert(data.message);
-}
-</script>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Register</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <h2>Register</h2>
+  <input id="username" placeholder="Username">
+  <input id="password" type="password" placeholder="Password">
+  <button onclick="register()">Submit</button>
+
+  <script>
+    const API = "http://localhost:3000"; // for now, local backend
+
+    async function register() {
+      const res = await fetch(API + "/register", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+          username: document.getElementById("username").value,
+          password: document.getElementById("password").value
+        })
+      });
+      const data = await res.json();
+      alert(data.message);
+    }
+  </script>
+</body>
+</html>
